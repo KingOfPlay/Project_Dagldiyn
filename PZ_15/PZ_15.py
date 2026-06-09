@@ -181,7 +181,7 @@ def display_all_items(conn):
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM items;")
         rows = cursor.fetchall()
-        print("\n--- Весь товарный запас на складе ---")
+        print('\n', 'Весь товарный запас на складе')
         display_results(rows)
     except Error as e:
         print(f"Ошибка вывода данных: {e}")
