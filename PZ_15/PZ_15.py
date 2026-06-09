@@ -159,7 +159,7 @@ def delete_menu(conn):
             item_type = input("Введите тип товаров для удаления: ").strip()
             cursor.execute("DELETE FROM items WHERE item_type = ?;", (item_type,))
         elif choice == '3':
-            brand = input('Введите торговую марку для удаления: ').strip()
+            brand = input("Введите торговую марку для удаления: ").strip()
             cursor.execute("DELETE FROM items WHERE brand = ?;", (brand,))
         else:
             print("Неверный выбор.")
