@@ -1,10 +1,8 @@
-import os
 import sqlite3
 from sqlite3 import Error
-
+from data import initial_items
 
 def create_connection(db_file):
-    """Создание подключения к базе данных SQLite."""
     conn = None
     try:
         conn = sqlite3.connect(db_file)
@@ -15,7 +13,6 @@ def create_connection(db_file):
 
 
 def create_table(conn):
-    """Создание таблицы Товары, если она еще не существует."""
     try:
         sql_create_table = """
         CREATE TABLE IF NOT EXISTS items (
@@ -35,22 +32,9 @@ def create_table(conn):
 
 
 def seed_database(conn):
-    """Заполнение базы данных 10 начальными позициями для демонстрации."""
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM items")
     if cursor.fetchone()[0] == 0:
-        initial_items = [
-            (101, "Samsung", "Телевизор", 45000.0, 15, 5),
-            (102, "LG", "Телевизор", 38000.0, 3, 5),
-            (103, "Apple", "Смартфон", 99000.0, 20, 8),
-            (104, "Xiaomi", "Смартфон", 19000.0, 25, 10),
-            (105, "Bosch", "Холодильник", 55000.0, 4, 5),
-            (106, "Sony", "Наушники", 15000.0, 30, 7),
-            (107, "Asus", "Ноутбук", 72000.0, 12, 4),
-            (108, "Lenovo", "Ноутбук", 48000.0, 2, 5),
-            (109, "Samsung", "Монитор", 18000.0, 8, 3),
-            (110, "Xiaomi", "Самокат", 32000.0, 6, 2)
-        ]
         try:
             cursor.executemany(
                 "INSERT INTO items VALUES (?, ?, ?, ?, ?, ?);",
@@ -62,9 +46,8 @@ def seed_database(conn):
             print(f"Ошибка при заполнении БД: {e}")
 
 
-# --- Операция: ВВОД ДАННЫХ ---
+# ввод данных
 def insert_item(conn):
-    """Добавление нового товара в базу данных."""
     print("\n--- Добавление нового товара ---")
     try:
         item_id = int(input("Введите код товара (ID): "))
@@ -91,9 +74,8 @@ def insert_item(conn):
         print(f"Ошибка БД (возможно, товар с таким ID уже существует): {e}")
 
 
-# --- Операция: ПОИСК (3 SQL-запроса) ---
+# поиск
 def search_menu(conn):
-    """Меню поиска товаров."""
     print("\n--- Режимы поиска ---")
     print("1. Поиск по типу товара (Запрос 1)")
     print("2. Поиск по торговой марке (Запрос 2)")
@@ -105,14 +87,11 @@ def search_menu(conn):
     try:
         if choice == '1':
             item_type = input("Введите тип товара для поиска: ").strip()
-            # SQL-запрос 1
             cursor.execute("SELECT * FROM items WHERE item_type LIKE ?;", (f"%{item_type}%",))
         elif choice == '2':
             brand = input("Введите торговую марку для поиска: ").strip()
-            # SQL-запрос 2
             cursor.execute("SELECT * FROM items WHERE brand LIKE ?;", (f"%{brand}%",))
         elif choice == '3':
-            # SQL-запрос 3
             cursor.execute("SELECT * FROM items WHERE quantity < min_stock;")
         else:
             print("Неверный выбор.")
@@ -124,9 +103,8 @@ def search_menu(conn):
         print(f"Ошибка при выполнении поиска: {e}")
 
 
-# --- Операция: РЕДАКТИРОВАНИЕ (3 SQL-запроса) ---
+# редактирование
 def edit_menu(conn):
-    """Меню изменения данных."""
     print("\n--- Режимы редактирования ---")
     print("1. Изменить цену товара по ID (Запрос 1)")
     print("2. Изменить количество на складе по ID (Запрос 2)")
@@ -139,17 +117,14 @@ def edit_menu(conn):
         if choice == '1':
             item_id = int(input("Введите ID товара: "))
             new_price = float(input("Введите новую цену: "))
-            # SQL-запрос 1
             cursor.execute("UPDATE items SET price = ? WHERE item_id = ?;", (new_price, item_id))
         elif choice == '2':
             item_id = int(input("Введите ID товара: "))
             new_qty = int(input("Введите новое количество: "))
-            # SQL-запрос 2
             cursor.execute("UPDATE items SET quantity = ? WHERE item_id = ?;", (new_qty, item_id))
         elif choice == '3':
             item_type = input("Введите тип товара: ").strip()
             new_min = int(input("Введите новый лимит минимального запаса: "))
-            # SQL-запрос 3
             cursor.execute("UPDATE items SET min_stock = ? WHERE item_type = ?;", (new_min, item_type))
         else:
             print("Неверный выбор.")
@@ -166,9 +141,8 @@ def edit_menu(conn):
         print(f"Ошибка при изменении данных: {e}")
 
 
-# --- Операция: УДАЛЕНИЕ (3 SQL-запроса) ---
+# удаление
 def delete_menu(conn):
-    """Меню удаления данных."""
     print("\n--- Режимы удаления ---")
     print("1. Удалить товар по ID (Запрос 1)")
     print("2. Удалить все товары определенного типа (Запрос 2)")
@@ -180,15 +154,12 @@ def delete_menu(conn):
     try:
         if choice == '1':
             item_id = int(input("Введите ID товара для удаления: "))
-            # SQL-запрос 1
             cursor.execute("DELETE FROM items WHERE item_id = ?;", (item_id,))
         elif choice == '2':
             item_type = input("Введите тип товаров для удаления: ").strip()
-            # SQL-запрос 2
             cursor.execute("DELETE FROM items WHERE item_type = ?;", (item_type,))
         elif choice == '3':
             brand = input("Введите торговую марку для удаления: ").strip()
-            # SQL-запрос 3
             cursor.execute("DELETE FROM items WHERE brand = ?;", (brand,))
         else:
             print("Неверный выбор.")
@@ -206,7 +177,6 @@ def delete_menu(conn):
 
 
 def display_all_items(conn):
-    """Вывод всех товаров таблицы на экран."""
     try:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM items;")
@@ -218,7 +188,6 @@ def display_all_items(conn):
 
 
 def display_results(rows):
-    """Вспомогательная функция форматированного вывода строк."""
     if not rows:
         print("Записи не найдены.")
         return
@@ -235,10 +204,10 @@ def main():
 
     if conn is not None:
         create_table(conn)
-        seed_database(conn)  # Заполнение стартовыми 10 позициями
+        seed_database(conn)
 
         while True:
-            print("\n================ МЕНЮ УПРАВЛЕНИЯ СКЛАДОМ ================")
+            print('\n', 'Меню управления складом')
             print("1. Посмотреть все товары")
             print("2. Добавить новый товар (Ввод)")
             print("3. Поиск товаров (3 SQL-запроса)")
