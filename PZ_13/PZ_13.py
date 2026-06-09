@@ -7,7 +7,7 @@ import re
 INPUT_FILE = "dates1.txt"
 OUTPUT_FILE = "february_dates.txt"
 
-DATE_PATTERN = r"\b(\d{2})[./](\d{2})[./](\d{4})\b"
+DATE_PATTERN = r"\b(\d{2})[/](\d{2})[/](\d{4})\b"
 
 
 def process_dates():
