@@ -1,137 +1,88 @@
-# В соответствии с номером варианта перейти по ссылке на прототип. Реализовать
-# его в IDE PyCharm Community с применением пакета tk.
-# Получить интерфейс максимально приближенный к оригиналу
+# Создать приложение по картинке (Вариант 13 - HTML5 Admin Template)
+# Источник: https://soulcompas.com/wp-content/uploads/2020/06/html5-admin-template-free.jpg
 import tkinter as tk
-from tkinter import messagebox, ttk
-
-
-def on_exit():
-    if messagebox.askyesno("Выход", "Вы действительно хотите выйти?"):
-        root.destroy()
-
+from tkinter import ttk
 
 root = tk.Tk()
-root.title("HTML5 Admin Template - Dashboard")
-root.geometry("950x600")
-root.configure(bg="#f4f6f9")
+root.title("Admin Panel - HTML5 Template")
+root.geometry("550x450")
 
-header_frame = tk.Frame(root, bg="#2c3e50", height=50)
-header_frame.pack(side=tk.TOP, fill=tk.X)
-header_frame.pack_propagate(False)
+# Главный контейнер с отступами
+main_frame = tk.Frame(root, padx=30, pady=20)
+main_frame.pack(fill=tk.BOTH, expand=True)
 
-logo_label = tk.Label(
-    header_frame,
-    text="ADMIN COMPASS",
-    font=("Arial", 13, "bold"),
-    fg="#ffffff",
-    bg="#2c3e50",
+# Заголовок формы
+title_label = tk.Label(main_frame, text="ADMIN PANEL", font=("Arial", 16, "bold"))
+title_label.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 10))
+
+# Подзаголовок
+subtitle_label = tk.Label(main_frame, text="User Management", font=("Arial", 10))
+subtitle_label.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 15))
+
+# --- Поля формы ---
+
+# Username
+tk.Label(main_frame, text="Username").grid(row=2, column=0, sticky="w", pady=5)
+username_entry = tk.Entry(main_frame, width=35)
+username_entry.grid(row=2, column=1, sticky="w", padx=10, pady=5)
+
+# Email
+tk.Label(main_frame, text="Email Address").grid(row=3, column=0, sticky="w", pady=5)
+email_entry = tk.Entry(main_frame, width=35)
+email_entry.grid(row=3, column=1, sticky="w", padx=10, pady=5)
+
+# Password
+tk.Label(main_frame, text="Password").grid(row=4, column=0, sticky="w", pady=5)
+password_entry = tk.Entry(main_frame, width=35, show="*")
+password_entry.grid(row=4, column=1, sticky="w", padx=10, pady=5)
+
+# Confirm Password
+tk.Label(main_frame, text="Confirm Password").grid(row=5, column=0, sticky="w", pady=5)
+confirm_entry = tk.Entry(main_frame, width=35, show="*")
+confirm_entry.grid(row=5, column=1, sticky="w", padx=10, pady=5)
+
+# Role (выпадающий список)
+tk.Label(main_frame, text="Role").grid(row=6, column=0, sticky="w", pady=5)
+role_var = tk.StringVar(value="Select role...")
+role_menu = ttk.OptionMenu(
+    main_frame,
+    role_var,
+    "Select role...",
+    "Administrator",
+    "Manager",
+    "Editor",
+    "User"
 )
-logo_label.pack(side=tk.LEFT, padx=15, pady=12)
+role_menu.config(width=33)
+role_menu.grid(row=6, column=1, sticky="w", padx=10, pady=5)
 
-exit_btn = tk.Button(
-    header_frame,
-    text="Выйти",
-    bg="#3498db",
-    fg="white",
-    relief=tk.FLAT,
-    font=("Arial", 10),
-    command=on_exit,
-)
-exit_btn.pack(side=tk.RIGHT, padx=15, pady=10)
+# Status (флажки)
+tk.Label(main_frame, text="Status").grid(row=7, column=0, sticky="nw", pady=5)
 
-sidebar_frame = tk.Frame(root, bg="#34495e", width=180)
-sidebar_frame.pack(side=tk.LEFT, fill=tk.Y)
-sidebar_frame.pack_propagate(False)
+status_frame = tk.Frame(main_frame)
+status_frame.grid(row=7, column=1, sticky="w", padx=10, pady=5)
 
-menu_items = ["📊 Dashboard", "📈 Analytics", "👥 Users", "📦 Products", "⚙️ Settings"]
-for item in menu_items:
-    btn = tk.Button(
-        sidebar_frame,
-        text=item,
-        font=("Arial", 11),
-        fg="#bdc3c7",
-        bg="#34495e",
-        relief=tk.FLAT,
-        anchor="w",
-        padx=15,
-        activebackground="#3498db",
-        activeforeground="white",
-    )
-    btn.pack(fill=tk.X, pady=2)
+status_active = tk.IntVar(value=1)
+status_inactive = tk.IntVar()
 
-content_frame = tk.Frame(root, bg="#f4f6f9", padx=20, pady=20)
-content_frame.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH)
+tk.Checkbutton(status_frame, text="Active", variable=status_active).pack(anchor="w")
+tk.Checkbutton(status_frame, text="Inactive", variable=status_inactive).pack(anchor="w")
 
-page_title = tk.Label(
-    content_frame,
-    text="Панель мониторинга",
-    font=("Arial", 16, "bold"),
-    bg="#f4f6f9",
-    fg="#333333",
-)
-page_title.pack(anchor="w", pady=(0, 15))
+# --- Кнопки действий ---
+button_frame = tk.Frame(main_frame)
+button_frame.grid(row=8, column=0, columnspan=2, pady=(25, 0))
 
-cards_container = tk.Frame(content_frame, bg="#f4f6f9")
-cards_container.pack(fill=tk.X, pady=(0, 20))
+save_btn = tk.Button(button_frame, text="Save Changes", width=15)
+save_btn.pack(side=tk.LEFT, padx=5)
 
-cards_data = [
-    ("Новые заказы", "154", "#2ecc71"),
-    ("Выручка", "45,200 ₽", "#3498db"),
-    ("Конверсия", "4.8%", "#e67e22"),
-]
+cancel_btn = tk.Button(button_frame, text="Cancel", width=15)
+cancel_btn.pack(side=tk.LEFT, padx=5)
 
-for title, val, color in cards_data:
-    card = tk.Frame(cards_container, bg="#ffffff", bd=1, relief=tk.SOLID)
-    card.pack(side=tk.LEFT, expand=True, fill=tk.BOTH, padx=5)
+reset_btn = tk.Button(button_frame, text="Reset", width=15)
+reset_btn.pack(side=tk.LEFT, padx=5)
 
-    top_bar = tk.Frame(card, bg=color, height=4)
-    top_bar.pack(fill=tk.X, side=tk.TOP)
-
-    l_title = tk.Label(
-        card, text=title, font=("Arial", 10), fg="#7f8c8d", bg="#ffffff"
-    )
-    l_title.pack(pady=(8, 2), padx=10, anchor="w")
-
-    l_val = tk.Label(
-        card, text=val, font=("Arial", 14, "bold"), fg="#2c3e50", bg="#ffffff"
-    )
-    l_val.pack(pady=(0, 8), padx=10, anchor="w")
-
-table_container = tk.Frame(content_frame, bg="#ffffff", bd=1, relief=tk.SOLID)
-table_container.pack(fill=tk.BOTH, expand=True)
-
-table_title = tk.Label(
-    table_container,
-    text="Последняя активность",
-    font=("Arial", 11, "bold"),
-    bg="#ffffff",
-    fg="#2c3e50",
-)
-table_title.pack(anchor="w", pady=(0, 10))
-
-columns = ("id", "customer", "amount", "status")
-tree = ttk.Treeview(table_container, columns=columns, show="headings", height=8)
-
-tree.heading("id", text="ID")
-tree.heading("customer", text="Контрагент")
-tree.heading("amount", text="Сумма")
-tree.heading("status", text="Статус")
-
-tree.column("id", width=60, anchor="center")
-tree.column("customer", width=220, anchor="w")
-tree.column("amount", width=110, anchor="e")
-tree.column("status", width=110, anchor="center")
-
-demo_rows = [
-    ("0041", "ООО Вектор", "12,400 ₽", "Обработано"),
-    ("0042", "ИП Петров А.В.", "3,150 ₽", "В ожидании"),
-    ("0043", "Соколова М.Н.", "850 ₽", "Обработано"),
-    ("0044", "ЗАО Технолоджи", "94,000 ₽", "Отклонено"),
-]
-
-for row in demo_rows:
-    tree.insert("", tk.END, values=row)
-
-tree.pack(fill=tk.BOTH, expand=True)
+# Футер с дополнительной информацией
+footer_label = tk.Label(main_frame, text="© 2026 Admin Panel v1.0", font=("Arial", 8))
+footer_label.grid(row=9, column=0, columnspan=2, pady=(20, 0))
 
 root.mainloop()
