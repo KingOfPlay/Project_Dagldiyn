@@ -1,5 +1,4 @@
-# Создать приложение по картинке (Вариант 13 - HTML5 Admin Template)
-# Источник: https://soulcompas.com/wp-content/uploads/2020/06/html5-admin-template-free.jpg
+# Создать приложение по картинке
 import tkinter as tk
 from tkinter import ttk
 
